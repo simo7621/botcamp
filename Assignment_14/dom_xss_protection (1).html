@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>DOM XSS Protection</title>
+</head>
+<body>
+    <h2>التفاعل مع DOM والوقاية من DOM-Based XSS</h2>
+
+    <label for="userInput">أدخل نصًا:</label><br>
+    <input type="text" id="userInput" size="50"><br><br>
+
+    <button id="unsafeBtn">عرض غير آمن (innerHTML)</button>
+    <button id="safeBtn">عرض آمن (textContent)</button>
+    <button id="payloadBtn">إدراج Payload تجريبي</button>
+
+    <h3>النتيجة غير الآمنة:</h3>
+    <div id="unsafeOutput"></div>
+
+    <h3>النتيجة الآمنة:</h3>
+    <div id="safeOutput"></div>
+
+    <script>
+        document.getElementById("payloadBtn").addEventListener("click", function () {
+            document.getElementById("userInput").value = "<img src=x onerror=alert(1)>";
+        });
+
+        document.getElementById("unsafeBtn").addEventListener("click", function () {
+            var text = document.getElementById("userInput").value;
+            document.getElementById("unsafeOutput").innerHTML = "المدخل: " + text;
+        });
+
+        document.getElementById("safeBtn").addEventListener("click", function () {
+            var text = document.getElementById("userInput").value;
+            var paragraph = document.createElement("p");
+            paragraph.textContent = "المدخل: " + text;
+            var output = document.getElementById("safeOutput");
+            output.textContent = "";
+            output.appendChild(paragraph);
+        });
+    </script>
+</body>
+</html>
